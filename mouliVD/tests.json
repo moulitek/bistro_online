@@ -1,0 +1,2208 @@
+[
+    {
+    "name" : "01 - syntax errors",
+    "desc" : "error handling tests",
+    "sequences" : [
+        {
+            "name" : "A - missing operator",
+            "desc" : "missing one operator at end of argument",
+            "tests" :
+                [
+                    {
+                        "name" : "missing op",
+                        "desc" : "not enough operators",
+                        "test" : "echo '3+6' | ./calc 0123456789 '()+-*/' 3",
+                        "exp" : "syntax error",
+                        "ret" : 84
+                    }
+                ]
+            
+        },
+        {
+            "name" : "B - too many operator",
+            "desc" : "Too many operator in operator flags",
+            "tests" :
+                [
+                    {
+                        "name" : "too many op",
+                        "desc" : "need less operators",
+                        "test" : "echo '3+6' | ./calc 0123456789 '()+-*/%$' 3",
+                        "exp" : "syntax error",
+                        "ret" : 84
+                    }
+                ]
+            
+        },
+        {
+            "name" : "C - operator in the base",
+            "desc" : "Operators shouldn't be in the base too",
+            "tests" :
+                [
+                    {
+                        "name" : "operator in base",
+                        "desc" : "operators should only be in operators",
+                        "test" : "echo '3+6' | ./calc 0123456789 '()+-*/0' 3",
+                        "exp" : "syntax error",
+                        "ret" : 84
+                    }
+                ]
+            
+        },
+        {
+            "name" : "D - two identical digits",
+            "desc" : "Two digits that are identical",
+            "tests" :
+                [
+                    {
+                        "name" : "two identical digit",
+                        "desc" : "all digits should be unique",
+                        "test" : "echo '3+6' | ./calc 0123450789 '()+-*/%' 3",
+                        "exp" : "syntax error",
+                        "ret" : 84
+                    }
+                ]
+            
+        },
+        {
+            "name" : "E - two identical operators",
+            "desc" : "Two operators that are identical",
+            "tests" :
+                [
+                    {
+                        "name" : "two identical operators",
+                        "desc" : "all operators should be unique",
+                        "test" : "echo '3+6' | ./calc 0123456789 '()+-*-%' 3",
+                        "exp" : "syntax error",
+                        "ret" : 84
+                    }
+                ]
+            
+        },
+        {
+            "name" : "F - unmatched parenthesis #1",
+            "desc" : "paranthesis that doesn't finish",
+            "tests" :
+                [
+                    {
+                        "name" : "unmatched parenthesis",
+                        "desc" : "paranthesis that doesn't finish",
+                        "test" : "echo '(3+6' | ./calc 0123456789 '()+-*/%' 4",
+                        "exp" : "syntax error",
+                        "ret" : 84
+                    }
+                ]
+            
+        },
+        {
+            "name" : "G - unmatched parenthesis #2",
+            "desc" : "paranthesis that doesn't begin",
+            "tests" :
+                [
+                    {
+                        "name" : "unmatched parenthesis",
+                        "desc" : "paranthesis that doesn't begin",
+                        "test" : "echo '3+6)' | ./calc 0123456789 '()+-*/%' 4",
+                        "exp" : "syntax error",
+                        "ret" : 84
+                    }
+                ]
+            
+        },
+        {
+            "name" : "H - invalid expression #1",
+            "desc" : "Expression with bad characters in it",
+            "tests" :
+                [
+                    {
+                        "name" : "invalid expression",
+                        "desc" : "Expression with bad characters in it",
+                        "test" : "echo '3ahoio49' | ./calc 0123456789 '()+-*/%' 8",
+                        "exp" : "syntax error",
+                        "ret" : 84
+                    }
+                ]
+            
+        },
+        {
+            "name" : "I - invalid expression #2",
+            "desc" : "Expression with bad characters in it",
+            "tests" :
+                [
+                    {
+                        "name" : "invalid expression",
+                        "desc" : "Expression with bad characters in it",
+                        "test" : "echo '3+64***0' | ./calc 0123456789 '()+-*/%' 8",
+                        "exp" : "syntax error",
+                        "ret" : 84
+                    }
+                ]
+            
+        },
+        {
+            "name" : "J - empty expression",
+            "desc" : "Empty test",
+            "tests" :
+                [
+                    {
+                        "name" : "test should at least contain value to return",
+                        "desc" : "Expression with bad characters in it",
+                        "test" : "echo '' | ./calc 0123456789 '()+-*/%' 0",
+                        "exp" : "syntax error",
+                        "ret" : 84
+                    }
+                ]
+            
+        },
+        {
+            "name" : "K - unknown digit",
+            "desc" : "Unkown digit",
+            "tests" :
+                [
+                    {
+                        "name" : "unknown digit",
+                        "desc" : "all used digit should be in digit list",
+                        "test" : "echo '3+o' | ./calc 0123456789 '()+-*/%' 3",
+                        "exp" : "syntax error",
+                        "ret" : 84
+                    }
+                ]
+            
+        },
+        {
+            "name" : "L - missing argument",
+            "desc" : "bad number of given argument",
+            "tests" :
+                [
+                    {
+                        "name" : "missing argument",
+                        "desc" : "should return 84 in case of missing argument",
+                        "test" : "echo '12' | ./calc 0123456789 '()+-*/%'",
+                        "exp" : "Usage: ./calc base ops\"()+_*/%\" exp_len\n",
+                        "ret" : 84
+                    }
+                ]
+            
+        }
+        ]
+    },
+    {
+    "name" : "02 - addition",
+    "desc" : "infin add tests",
+    "sequences" : [
+        {
+            "name" : "A - simple #1",
+            "desc" : "simple addition",
+            "tests":
+                [
+                    {
+                        "name" : "simple",
+                        "desc" : "simple addition",
+                        "test" : "echo '6+3' | ./calc 0123456789 '()+-*/%' 3",
+                        "exp" : "9",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "B - simple #2",
+            "desc" : "simple addition",
+            "tests":
+                [
+                    {
+                        "name" : "simple",
+                        "desc" : "simple addition",
+                        "test" : "echo '2+1+8+6' | ./calc 0123456789 '()+-*/%' 7",
+                        "exp" : "17",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "C - size handling #1",
+            "desc" : "size handling",
+            "tests":
+                [
+                    {
+                        "name" : "size handling",
+                        "desc" : "894 + 5 should be handled",
+                        "test" : "echo '894+5' | ./calc 0123456789 '()+-*/%' 5",
+                        "exp" : "899",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "D - size handling #2",
+            "desc" : "size handling",
+            "tests":
+                [
+                    {
+                        "name" : "size handling",
+                        "desc" : "5000000 + 8000000 should be handled",
+                        "test" : "echo '5000000+8000000' | ./calc 0123456789 '()+-*/%' 15",
+                        "exp" : "13000000",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "E - with remainder",
+            "desc" : "remainder should be handled",
+            "tests":
+                [
+                    {
+                        "name" : "with remainder",
+                        "desc" : "900 + 100 should be handled",
+                        "test" : "echo '900+100' | ./calc 0123456789 '()+-*/%' 7",
+                        "exp" : "1000",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "F - big #1",
+            "desc" : "big numbers",
+            "tests":
+                [
+                    {
+                        "name" : "big",
+                        "desc" : "big numbers addition : 464118962796252 + 148965567428916",
+                        "test" : "echo '464118962796252+148965567428916' | ./calc 0123456789 '()+-*/%' 31",
+                        "exp" : "613084530225168",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "G - big #2",
+            "desc" : "big numbers",
+            "tests":
+                [
+                    {
+                        "name" : "big",
+                        "desc" : "big numbers addition : 1489618+41213641+4844464856456465",
+                        "test" : "echo '1489618+41213641+4844464856456465' | ./calc 0123456789 '()+-*/%' 33",
+                        "exp" : "4844464899159724",
+                        "ret" : 0
+                    }
+                ]
+        }
+        ]
+    },
+    {
+    "name" : "02.5 - addition",
+    "desc" : "infin add tests",
+    "sequences" : [
+        {
+            "name" : "A - simple #1",
+            "desc" : "simple addition",
+            "tests":
+                [
+                    {
+                        "name" : "simple",
+                        "desc" : "simple addition",
+                        "test" : "echo '3+2' | ./calc 0123456789 '()+-*/%' 3",
+                        "exp" : "5",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "B - simple #2",
+            "desc" : "simple addition",
+            "tests":
+                [
+                    {
+                        "name" : "simple",
+                        "desc" : "simple addition",
+                        "test" : "echo '2+2+0+1' | ./calc 0123456789 '()+-*/%' 7",
+                        "exp" : "5",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "C - size handling #1",
+            "desc" : "size handling",
+            "tests":
+                [
+                    {
+                        "name" : "size handling",
+                        "desc" : "5654 + 45631 should be handled",
+                        "test" : "echo '5654+45631' | ./calc 0123456789 '()+-*/%' 10",
+                        "exp" : "51285",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "D - size handling #2",
+            "desc" : "size handling",
+            "tests":
+                [
+                    {
+                        "name" : "size handling",
+                        "desc" : "2000000 + 1000000 should be handled",
+                        "test" : "echo '2000000+1000000' | ./calc 0123456789 '()+-*/%' 15",
+                        "exp" : "3000000",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "E - with remainder",
+            "desc" : "remainder should be handled",
+            "tests":
+                [
+                    {
+                        "name" : "with remainder : 9 + 1",
+                        "desc" : "9 + 1 should be handled",
+                        "test" : "echo '9+1' | ./calc 0123456789 '()+-*/%' 3",
+                        "exp" : "10",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "F - big #1",
+            "desc" : "big numbers",
+            "tests":
+                [
+                    {
+                        "name" : "big",
+                        "desc" : "big numbers addition : 464118563896252 + 148965132318916",
+                        "test" : "echo '464118563896252+148965132318916' | ./calc 0123456789 '()+-*/%' 31",
+                        "exp" : "613083696215168",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "G - big #2",
+            "desc" : "big numbers",
+            "tests":
+                [
+                    {
+                        "name" : "big",
+                        "desc" : "big numbers addition : 1441618+41579641+4844465546456465",
+                        "test" : "echo '1441618+41579641+4844465546456465' | ./calc 0123456789 '()+-*/%' 33",
+                        "exp" : "4844465589477724",
+                        "ret" : 0
+                    }
+                ]
+        }
+        ]
+    },
+    {
+    "name" : "03 - substraction",
+    "desc" : "infin sub tests",
+    "sequences" : [
+        {
+            "name" : "A - simple positive #1",
+            "desc" : "simple substraction",
+            "tests":
+                [
+                    {
+                        "name" : "simple",
+                        "desc" : "simple substraction",
+                        "test" : "echo '2-1' | ./calc 0123456789 '()+-*/%' 3",
+                        "exp" : "1",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "B - simple negative #1",
+            "desc" : "simple substraction",
+            "tests":
+                [
+                    {
+                        "name" : "simple",
+                        "desc" : "simple substraction",
+                        "test" : "echo '1-2' | ./calc 0123456789 '()+-*/%' 3",
+                        "exp" : "-1",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "C - simple negative #2",
+            "desc" : "simple substraction",
+            "tests":
+                [
+                    {
+                        "name" : "simple",
+                        "desc" : "simple substraction",
+                        "test" : "echo '-1-2' | ./calc 0123456789 '()+-*/%' 4",
+                        "exp" : "-3",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "D - size handling #1",
+            "desc" : "size handling",
+            "tests":
+                [
+                    {
+                        "name" : "size handling",
+                        "desc" : "2000000 - 1000000 should be handled",
+                        "test" : "echo '2000000-1000000' | ./calc 0123456789 '()+-*/%' 15",
+                        "exp" : "1000000",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "E - size handling #2",
+            "desc" : "size handling",
+            "tests":
+                [
+                    {
+                        "name" : "size handling",
+                        "desc" : "-2000000 - 1000000 should be handled",
+                        "test" : "echo '-2000000-1000000' | ./calc 0123456789 '()+-*/%' 16",
+                        "exp" : "-3000000",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "F - size handling #3",
+            "desc" : "size handling",
+            "tests":
+                [
+                    {
+                        "name" : "size handling",
+                        "desc" : "-2000000 -1000000 should be handled",
+                        "test" : "echo '-2000000-1000000' | ./calc 0123456789 '()+-*/%' 16",
+                        "exp" : "-3000000",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "G - with remainder #1",
+            "desc" : "substract with remainder",
+            "tests":
+                [
+                    {
+                        "name" : "with remainder",
+                        "desc" : "with remainder substract : -1441618-41579641-4844465546456465",
+                        "test" : "echo '-1441618-41579641-4844465546456465' | ./calc 0123456789 '()+-*/%' 34",
+                        "exp" : "-4844465589477724",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "H - with remainder #2",
+            "desc" : "substract with remainder",
+            "tests":
+                [
+                    {
+                        "name" : "with remainder",
+                        "desc" : "with remainder substract : -1441618 - -89415",
+                        "test" : "echo '-1441618-89415' | ./calc 0123456789 '()+-*/%' 14",
+                        "exp" : "-1531033",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "I - two operators #1",
+            "desc" : "substract with two operator",
+            "tests":
+                [
+                    {
+                        "name" : "with remainder",
+                        "desc" : "with remainder substract : 0 - -1441618 - -89415",
+                        "test" : "echo '0--1441618--89415' | ./calc 0123456789 '()+-*/%' 17",
+                        "exp" : "1531033",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "J - big #1",
+            "desc" : "substract big numbers",
+            "tests":
+                [
+                    {
+                        "name" : "big",
+                        "desc" : "substract big numbers : 1441618 -00065896564884689415",
+                        "test" : "echo '1441618-00065896564884689415' | ./calc 0123456789 '()+-*/%' 28",
+                        "exp" : "-65896564883247797",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "K - big #1",
+            "desc" : "substract big numbers",
+            "tests":
+                [
+                    {
+                        "name" : "big",
+                        "desc" : "substract big numbers : -00144100618 -00065896",
+                        "test" : "echo '-00144100618-00065896' | ./calc 0123456789 '()+-*/%' 21",
+                        "exp" : "-144166514",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "L - big #1",
+            "desc" : "substract big numbers",
+            "tests":
+                [
+                    {
+                        "name" : "big",
+                        "desc" : "substract big numbers : -00144118 -000696",
+                        "test" : "echo '-00144118-000696' | ./calc 0123456789 '()+-*/%' 16",
+                        "exp" : "-144814",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "M - big #1",
+            "desc" : "substract big numbers",
+            "tests":
+                [
+                    {
+                        "name" : "big",
+                        "desc" : "substract big numbers : 00008 -000696",
+                        "test" : "echo '00008-000696' | ./calc 0123456789 '()+-*/%' 12",
+                        "exp" : "-688",
+                        "ret" : 0
+                    }
+                ]
+        }
+        ]
+    },
+    {
+    "name" : "03.5 - substraction",
+    "desc" : "infin sub tests",
+    "sequences" : [
+        {
+            "name" : "A - simple positive #1",
+            "desc" : "simple substraction",
+            "tests":
+                [
+                    {
+                        "name" : "simple",
+                        "desc" : "simple substraction",
+                        "test" : "echo '8-1' | ./calc 0123456789 '()+-*/%' 3",
+                        "exp" : "7",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "B - simple negative #1",
+            "desc" : "simple substraction",
+            "tests":
+                [
+                    {
+                        "name" : "simple",
+                        "desc" : "simple substraction",
+                        "test" : "echo '10-20' | ./calc 0123456789 '()+-*/%' 5",
+                        "exp" : "-10",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "C - simple negative #2",
+            "desc" : "simple substraction",
+            "tests":
+                [
+                    {
+                        "name" : "simple",
+                        "desc" : "simple substraction",
+                        "test" : "echo '-12-22' | ./calc 0123456789 '()+-*/%' 6",
+                        "exp" : "-34",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "D - size handling #1",
+            "desc" : "size handling",
+            "tests":
+                [
+                    {
+                        "name" : "size handling",
+                        "desc" : "25450000 - 1450000 should be handled",
+                        "test" : "echo '25450000-1450000' | ./calc 0123456789 '()+-*/%' 16",
+                        "exp" : "24000000",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "E - size handling #2",
+            "desc" : "size handling",
+            "tests":
+                [
+                    {
+                        "name" : "size handling",
+                        "desc" : "-2568000 - 1568000 should be handled",
+                        "test" : "echo '-2568000-1568000' | ./calc 0123456789 '()+-*/%' 16",
+                        "exp" : "-4136000",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "F - size handling #3",
+            "desc" : "size handling",
+            "tests":
+                [
+                    {
+                        "name" : "size handling",
+                        "desc" : "-2560 -185646513 should be handled",
+                        "test" : "echo '-2560-185646513' | ./calc 0123456789 '()+-*/%' 15",
+                        "exp" : "-185649073",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "G - with remainder #1",
+            "desc" : "substract with remainder",
+            "tests":
+                [
+                    {
+                        "name" : "with remainder",
+                        "desc" : "with remainder substract : -189718-4569641-878465546456465",
+                        "test" : "echo '-189718-4569641-878465546456465' | ./calc 0123456789 '()+-*/%' 31",
+                        "exp" : "-878465551215824",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "H - with remainder #2",
+            "desc" : "substract with remainder",
+            "tests":
+                [
+                    {
+                        "name" : "with remainder",
+                        "desc" : "with remainder substract : -1441618 - 89415",
+                        "test" : "echo '-1441618-89415' | ./calc 0123456789 '()+-*/%' 14",
+                        "exp" : "-1531033",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "I - two operators #1",
+            "desc" : "substract with two operator",
+            "tests":
+                [
+                    {
+                        "name" : "with remainder",
+                        "desc" : "with remainder substract : 0 - -1441618 - -89415",
+                        "test" : "echo '0--1441618--89415' | ./calc 0123456789 '()+-*/%' 17",
+                        "exp" : "1531033",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "J - big #1",
+            "desc" : "substract big numbers",
+            "tests":
+                [
+                    {
+                        "name" : "big",
+                        "desc" : "substract big numbers : 1441618 -00065896564884689415",
+                        "test" : "echo '1441618-00065896564884689415' | ./calc 0123456789 '()+-*/%' 28",
+                        "exp" : "-65896564883247797",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "K - big #1",
+            "desc" : "substract big numbers",
+            "tests":
+                [
+                    {
+                        "name" : "big",
+                        "desc" : "substract big numbers : -00144100618 -00065896",
+                        "test" : "echo '-00144100618-00065896' | ./calc 0123456789 '()+-*/%' 21",
+                        "exp" : "-144166514",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "L - big #1",
+            "desc" : "substract big numbers",
+            "tests":
+                [
+                    {
+                        "name" : "big",
+                        "desc" : "substract big numbers : -00144118 -000696",
+                        "test" : "echo '-00144118-000696' | ./calc 0123456789 '()+-*/%' 16",
+                        "exp" : "-144814",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "M - big #1",
+            "desc" : "substract big numbers",
+            "tests":
+                [
+                    {
+                        "name" : "big",
+                        "desc" : "substract big numbers : 00008 -000696",
+                        "test" : "echo '00008-000696' | ./calc 0123456789 '()+-*/%' 12",
+                        "exp" : "-688",
+                        "ret" : 0
+                    }
+                ]
+        }
+        ]
+    },
+    {
+    "name" : "04 - multiplication",
+    "desc" : "infin mul tests",
+    "sequences" : [
+        {
+            "name" : "A - simple",
+            "desc" : "simple multiplication",
+            "tests" :
+                [
+                    {
+                        "name" : "simple",
+                        "desc" : "simple multiplication : 3*2",
+                        "test" : "echo '3*2' | ./calc 0123456789 '()+-*/%' 3",
+                        "exp" : "6",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "B - size handling #1",
+            "desc" : "big multiplication",
+            "tests" :
+                [
+                    {
+                        "name" : "size handling",
+                        "desc" : "multiplication of big numbers : 300000000*200",
+                        "test" : "echo '300000000*200' | ./calc 0123456789 '()+-*/%' 13",
+                        "exp" : "60000000000",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "C - size handling #2",
+            "desc" : "multiple multiplication",
+            "tests" :
+                [
+                    {
+                        "name" : "size handling",
+                        "desc" : "multiple multiplication : 7 * 8 * 3",
+                        "test" : "echo '7*8*3' | ./calc 0123456789 '()+-*/%' 5",
+                        "exp" : "168",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "D - size handling #3",
+            "desc" : "small multiplication",
+            "tests" :
+                [
+                    {
+                        "name" : "size handling",
+                        "desc" : "small multiplication : 1*1",
+                        "test" : "echo '1*1' | ./calc 0123456789 '()+-*/%' 3",
+                        "exp" : "1",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "E - with negative number #1",
+            "desc" : "negative",
+            "tests" :
+                [
+                    {
+                        "name" : "negative numbers",
+                        "desc" : "negative multiplication : 300000080*-200",
+                        "test" : "echo '300000080*-200' | ./calc 0123456789 '()+-*/%' 14",
+                        "exp" : "-60000016000",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "F - with negative number #2",
+            "desc" : "negative",
+            "tests" :
+                [
+                    {
+                        "name" : "negative multiplication",
+                        "desc" : "negative multiplication of big numbers : -60016000000",
+                        "test" : "echo '300080000*-200' | ./calc 0123456789 '()+-*/%' 14",
+                        "exp" : "-60016000000",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "G - big #1",
+            "desc" : "big numbers multiplication",
+            "tests" :
+                [
+                    {
+                        "name" : "big",
+                        "desc" : "big numbers multiplication : -003000*-0200",
+                        "test" : "echo '-003000*-0200' | ./calc 0123456789 '()+-*/%' 13",
+                        "exp" : "600000",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "H - big #2",
+            "desc" : "big numbers multiplication",
+            "tests" :
+                [
+                    {
+                        "name" : "big",
+                        "desc" : "big numbers multiplication : -00*-0200*2*-9",
+                        "test" : "echo '-0*-200*2*-9' | ./calc 0123456789 '()+-*/%' 12",
+                        "exp" : "0",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "I - big #2",
+            "desc" : "big numbers multiplication",
+            "tests" :
+                [
+                    {
+                        "name" : "big",
+                        "desc" : "big numbers multiplication : -002222222222220*2*-9*8",
+                        "test" : "echo '-002222222222220*2*-9*8' | ./calc 0123456789 '()+-*/%' 23",
+                        "exp" : "319999999999680",
+                        "ret" : 0
+                    }
+                ]
+        }
+    ]
+    },
+    {
+    "name" : "04.5 - multiplication",
+    "desc" : "infin mul tests bis",
+    "sequences" : [
+        {
+            "name" : "A - simple",
+            "desc" : "simple multiplication",
+            "tests" :
+                [
+                    {
+                        "name" : "simple",
+                        "desc" : "simple multiplication : 3*2",
+                        "test" : "echo '3*2' | ./calc 0123456789 '()+-*/%' 3",
+                        "exp" : "6",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "B - size handling #1",
+            "desc" : "big multiplication",
+            "tests" :
+                [
+                    {
+                        "name" : "size handling",
+                        "desc" : "multiplication of big numbers : 300000000*200",
+                        "test" : "echo '300000000*200' | ./calc 0123456789 '()+-*/%' 13",
+                        "exp" : "60000000000",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "C - size handling #2",
+            "desc" : "multiple multiplication",
+            "tests" :
+                [
+                    {
+                        "name" : "size handling",
+                        "desc" : "multiple multiplication : 7 * 8 * 3",
+                        "test" : "echo '7*8*3' | ./calc 0123456789 '()+-*/%' 5",
+                        "exp" : "168",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "D - size handling #3",
+            "desc" : "small multiplication",
+            "tests" :
+                [
+                    {
+                        "name" : "size handling",
+                        "desc" : "small multiplication : 1*1",
+                        "test" : "echo '1*1' | ./calc 0123456789 '()+-*/%' 3",
+                        "exp" : "1",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "E - with negative number #1",
+            "desc" : "negative",
+            "tests" :
+                [
+                    {
+                        "name" : "negative numbers",
+                        "desc" : "negative multiplication : 300000080*-200",
+                        "test" : "echo '300000080*-200' | ./calc 0123456789 '()+-*/%' 14",
+                        "exp" : "-60000016000",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "F - with negative number #2",
+            "desc" : "negative",
+            "tests" :
+                [
+                    {
+                        "name" : "negative multiplication",
+                        "desc" : "negative multiplication of big numbers : 300080000*-200",
+                        "test" : "echo '300080000*-200' | ./calc 0123456789 '()+-*/%' 14",
+                        "exp" : "-60016000000",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "G - big #1",
+            "desc" : "big numbers multiplication",
+            "tests" :
+                [
+                    {
+                        "name" : "big",
+                        "desc" : "big numbers multiplication : -003000*-0200",
+                        "test" : "echo '-003000*-0200' | ./calc 0123456789 '()+-*/%' 13",
+                        "exp" : "600000",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "H - big #2",
+            "desc" : "big numbers multiplication",
+            "tests" :
+                [
+                    {
+                        "name" : "big",
+                        "desc" : "big numbers multiplication : -00*-0200*2*-9",
+                        "test" : "echo '-00*-0200*2*-9' | ./calc 0123456789 '()+-*/%' 14",
+                        "exp" : "0",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "I - big #2",
+            "desc" : "big numbers multiplication",
+            "tests" :
+                [
+                    {
+                        "name" : "big",
+                        "desc" : "big numbers multiplication : -002222222222220*2*-9*8",
+                        "test" : "echo '-002222222222220*2*-9*8' | ./calc 0123456789 '()+-*/%' 23",
+                        "exp" : "319999999999680",
+                        "ret" : 0
+                    }
+                ]
+        }
+    ]
+    },
+    {
+    "name" : "05 - division",
+    "desc" : "infin div tests",
+    "sequences" :
+        [
+            {
+                "name" : "A - simple #1",
+                "desc" :"simple division of small numbers",
+                "tests" :
+                    [
+                        {
+                            "name" : "simple",
+                            "desc" : "simple division : 6/2",
+                            "test" : "echo '6/2' | ./calc 0123456789 '()+-*/%' 3",
+                            "exp" : "3",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "B - simple #2",
+                "desc" :"simple division of small numbers",
+                "tests" :
+                    [
+                        {
+                            "name" : "simple",
+                            "desc" : "simple division : 3/9",
+                            "test" : "echo '3/9' | ./calc 0123456789 '()+-*/%' 3",
+                            "exp" : "0",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "C - size handling #1",
+                "desc" :"size tests",
+                "tests" :
+                    [
+                        {
+                            "name" : "size handling",
+                            "desc" : "size tests : 6000 / 2",
+                            "test" : "echo '6000/2' | ./calc 0123456789 '()+-*/%' 6",
+                            "exp" : "3000",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "D - size handling #2",
+                "desc" :"size tests",
+                "tests" :
+                    [
+                        {
+                            "name" : "size handling",
+                            "desc" : "size tests : 6 / 2000",
+                            "test" : "echo '6/2000' | ./calc 0123456789 '()+-*/%' 6",
+                            "exp" : "0",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "E - size handling #3",
+                "desc" :"size tests",
+                "tests" :
+                    [
+                        {
+                            "name" : "size handling",
+                            "desc" : "size tests : 6000 / 2000",
+                            "test" : "echo '6000/2000' | ./calc 0123456789 '()+-*/%' 9",
+                            "exp" : "3",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "F - with negative number #1",
+                "desc" :"negative numbers division",
+                "tests" :
+                    [
+                        {
+                            "name" : "negative numbers",
+                            "desc" : "negative test : -6000 / 2000",
+                            "test" : "echo '-6000/2000' | ./calc 0123456789 '()+-*/%' 10",
+                            "exp" : "-3",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "G - with negative number #2",
+                "desc" :"negative numbers division",
+                "tests" :
+                    [
+                        {
+                            "name" : "negative numbers",
+                            "desc" : "negative test : -6000 / -2000",
+                            "test" : "echo '-6000/-2000' | ./calc 0123456789 '()+-*/%' 11",
+                            "exp" : "3",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "H - big #1",
+                "desc" :"big division",
+                "tests" :
+                    [
+                        {
+                            "name" : "big numbers",
+                            "desc" : "multiple test : -6000 / -2000 / 12 / 2 / 3",
+                            "test" : "echo '-6000/-2000/12/2/3' | ./calc 0123456789 '()+-*/%' 18",
+                            "exp" : "0",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "I - big #2",
+                "desc" :"big division",
+                "tests" :
+                    [
+                        {
+                            "name" : "big numbers",
+                            "desc" : "multiple test : -6000 / 2 / -2 / -3 / 7 ",
+                            "test" : "echo '-6000/2/-2/-3/7' | ./calc 0123456789 '()+-*/%' 15",
+                            "exp" : "-71",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "J - big #3",
+                "desc" :"big division",
+                "tests" :
+                    [
+                        {
+                            "name" : "big numbers",
+                            "desc" : "multiple test : 55631 /2 / 20000/3",
+                            "test" : "echo '55631/2/20000/3' | ./calc 0123456789 '()+-*/%' 15",
+                            "exp" : "0",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "K - by 0 exception",
+                "desc" :"by 0",
+                "tests" :
+                    [
+                        {
+                            "name" : "by 0",
+                            "desc" : "division by 0 : 15123  / 0",
+                            "test" : "echo '15123/0' | ./calc 0123456789 '()+-*/%' 7",
+                            "exp" : "syntax error",
+                            "ret" : 84
+                        }
+                    ]
+            }
+        ]
+    },
+    {
+    "name" : "05.5 - division",
+    "desc" : "infin div tests",
+    "sequences" :
+        [
+            {
+                "name" : "A - simple #1",
+                "desc" :"simple division of small numbers",
+                "tests" :
+                    [
+                        {
+                            "name" : "simple",
+                            "desc" : "simple division : 8/3",
+                            "test" : "echo '8/3' | ./calc 0123456789 '()+-*/%' 3",
+                            "exp" : "2",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "B - simple #2",
+                "desc" :"simple division of small numbers",
+                "tests" :
+                    [
+                        {
+                            "name" : "simple",
+                            "desc" : "simple division : 8/5",
+                            "test" : "echo '8/5' | ./calc 0123456789 '()+-*/%' 3",
+                            "exp" : "1",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "C - size handling #1",
+                "desc" :"size tests",
+                "tests" :
+                    [
+                        {
+                            "name" : "size handling",
+                            "desc" : "size tests : 7001 / 2",
+                            "test" : "echo '7001/2' | ./calc 0123456789 '()+-*/%' 6",
+                            "exp" : "3500",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "D - size handling #2",
+                "desc" :"size tests",
+                "tests" :
+                    [
+                        {
+                            "name" : "size handling",
+                            "desc" : "size tests : 5 / 3000",
+                            "test" : "echo '5/3000' | ./calc 0123456789 '()+-*/%' 6",
+                            "exp" : "0",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "E - size handling #3",
+                "desc" :"size tests",
+                "tests" :
+                    [
+                        {
+                            "name" : "size handling",
+                            "desc" : "size tests : 8900 / 005642",
+                            "test" : "echo '8900/005642' | ./calc 0123456789 '()+-*/%' 11",
+                            "exp" : "1",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "F - with negative number #1",
+                "desc" :"negative numbers division",
+                "tests" :
+                    [
+                        {
+                            "name" : "negative numbers",
+                            "desc" : "negative test : -2698 / 4865",
+                            "test" : "echo '-2698/4865' | ./calc 0123456789 '()+-*/%' 10",
+                            "exp" : "0",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "G - with negative number #2",
+                "desc" :"negative numbers division",
+                "tests" :
+                    [
+                        {
+                            "name" : "negative numbers",
+                            "desc" : "negative test : -6568 / -7800",
+                            "test" : "echo '-6568/-7800' | ./calc 0123456789 '()+-*/%' 11",
+                            "exp" : "0",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "H - big #1",
+                "desc" :"big division",
+                "tests" :
+                    [
+                        {
+                            "name" : "big numbers",
+                            "desc" : "multiple test : -56 / -00596 / 12 / 2 / 3",
+                            "test" : "echo '-56/-00596/12/2/3' | ./calc 0123456789 '()+-*/%' 17",
+                            "exp" : "0",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "I - big #2",
+                "desc" :"big division",
+                "tests" :
+                    [
+                        {
+                            "name" : "big numbers",
+                            "desc" : "multiple test : -60 / 2 / -2 / -356 / 7 ",
+                            "test" : "echo '-60/2/-2/-356/7' | ./calc 0123456789 '()+-*/%' 15",
+                            "exp" : "0",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "J - big #3",
+                "desc" :"big division",
+                "tests" :
+                    [
+                        {
+                            "name" : "big numbers",
+                            "desc" : "multiple test : 5589251 /2 / 200/3",
+                            "test" : "echo '5589251/2/200/3' | ./calc 0123456789 '()+-*/%' 15",
+                            "exp" : "4657",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "K - by 0 exception",
+                "desc" :"by 0",
+                "tests" :
+                    [
+                        {
+                            "name" : "by 0",
+                            "desc" : "division by 0 : 0  / 0",
+                            "test" : "echo '0/0' | ./calc 0123456789 '()+-*/%' 3",
+                            "exp" : "syntax error",
+                            "ret" : 84
+                        }
+                    ]
+            }
+        ]
+    },
+    {
+    "name" : "06 - modulo",
+    "desc" : "infin modulo tests",
+    "sequences" :
+        [
+            {
+                "name" : "A - simple #1",
+                "desc" :"simple modulo of small numbers",
+                "tests" :
+                    [
+                        {
+                            "name" : "simple",
+                            "desc" : "simple division : 6%2",
+                            "test" : "echo '6%2' | ./calc 0123456789 '()+-*/%' 3",
+                            "exp" : "0",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "B - simple #2",
+                "desc" :"simple modulo of small numbers",
+                "tests" :
+                    [
+                        {
+                            "name" : "simple",
+                            "desc" : "simple division : 3%9",
+                            "test" : "echo '3%9' | ./calc 0123456789 '()+-*/%' 3",
+                            "exp" : "3",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "C - size handling #1",
+                "desc" :"size tests",
+                "tests" :
+                    [
+                        {
+                            "name" : "size handling",
+                            "desc" : "size tests : 6000 % 2",
+                            "test" : "echo '6000%2' | ./calc 0123456789 '()+-*/%' 6",
+                            "exp" : "0",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "D - size handling #2",
+                "desc" :"size tests",
+                "tests" :
+                    [
+                        {
+                            "name" : "size handling",
+                            "desc" : "size tests : 6 % 2000",
+                            "test" : "echo '6%2000' | ./calc 0123456789 '()+-*/%' 6",
+                            "exp" : "6",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "E - size handling #3",
+                "desc" :"size tests",
+                "tests" :
+                    [
+                        {
+                            "name" : "size handling",
+                            "desc" : "size tests : 6000 % 2000",
+                            "test" : "echo '6000%2000' | ./calc 0123456789 '()+-*/%' 9",
+                            "exp" : "0",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "F - with negative number #1",
+                "desc" :"negative numbers modulo",
+                "tests" :
+                    [
+                        {
+                            "name" : "negative numbers",
+                            "desc" : "negative test : -6000 % 2000",
+                            "test" : "echo '-6000%2000' | ./calc 0123456789 '()+-*/%' 10",
+                            "exp" : "0",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "G - with negative number #2",
+                "desc" :"negative numbers modulo",
+                "tests" :
+                    [
+                        {
+                            "name" : "negative numbers",
+                            "desc" : "negative test : -6000 % -2000",
+                            "test" : "echo '-6000%-2000' | ./calc 0123456789 '()+-*/%' 11",
+                            "exp" : "0",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "H - big #1",
+                "desc" :"big modulo",
+                "tests" :
+                    [
+                        {
+                            "name" : "big numbers",
+                            "desc" : "multiple test : -6000 % -2000 % 12 % 2 % 3",
+                            "test" : "echo '-6000%-2000%12%2%3' | ./calc 0123456789 '()+-*/%' 18",
+                            "exp" : "0",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "I - big #2",
+                "desc" :"big modulo",
+                "tests" :
+                    [
+                        {
+                            "name" : "big numbers",
+                            "desc" : "multiple test : -6000 % 2 % -2 % -3 % 7 ",
+                            "test" : "echo '-6000%2%-2%-3%7' | ./calc 0123456789 '()+-*/%' 15",
+                            "exp" : "0",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "J - big #3",
+                "desc" :"big division",
+                "tests" :
+                    [
+                        {
+                            "name" : "big numbers",
+                            "desc" : "multiple test : 55631 %2 % 20000 %3",
+                            "test" : "echo '55631%2%20000%3' | ./calc 0123456789 '()+-*/%' 15",
+                            "exp" : "1",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "K - by 0 exception",
+                "desc" :"by 0",
+                "tests" :
+                    [
+                        {
+                            "name" : "by 0",
+                            "desc" : "modulo by 0 : 15123  % 0",
+                            "test" : "echo '15123%0' | ./calc 0123456789 '()+-*/%' 7",
+                            "exp" : "syntax error",
+                            "ret" : 84
+                        }
+                    ]
+            }
+        ]
+    },
+    {
+    "name" : "06.5 - modulo",
+    "desc" : "infin modulo tests",
+    "sequences" :
+        [
+            {
+                "name" : "A - simple #1",
+                "desc" :"simple modulo of small numbers",
+                "tests" :
+                    [
+                        {
+                            "name" : "simple",
+                            "desc" : "simple modulo : 8%3",
+                            "test" : "echo '8%3' | ./calc 0123456789 '()+-*/%' 3",
+                            "exp" : "2",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "B - simple #2",
+                "desc" :"simple modulo of small numbers",
+                "tests" :
+                    [
+                        {
+                            "name" : "simple",
+                            "desc" : "simple modulo : 8%5",
+                            "test" : "echo '8%5' | ./calc 0123456789 '()+-*/%' 3",
+                            "exp" : "3",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "C - size handling #1",
+                "desc" :"size tests",
+                "tests" :
+                    [
+                        {
+                            "name" : "size handling",
+                            "desc" : "size tests : 7001 % 2",
+                            "test" : "echo '7001%2' | ./calc 0123456789 '()+-*/%' 6",
+                            "exp" : "1",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "D - size handling #2",
+                "desc" :"size tests",
+                "tests" :
+                    [
+                        {
+                            "name" : "size handling",
+                            "desc" : "size tests : 5 % 3000",
+                            "test" : "echo '5%3000' | ./calc 0123456789 '()+-*/%' 6",
+                            "exp" : "5",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "E - size handling #3",
+                "desc" :"size tests",
+                "tests" :
+                    [
+                        {
+                            "name" : "size handling",
+                            "desc" : "size tests : 8900 % 005642",
+                            "test" : "echo '8900%005642' | ./calc 0123456789 '()+-*/%' 11",
+                            "exp" : "3258",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "F - with negative number #1",
+                "desc" :"negative numbers modulo",
+                "tests" :
+                    [
+                        {
+                            "name" : "negative numbers",
+                            "desc" : "negative test : -2698 % 4865",
+                            "test" : "echo '-2698%4865' | ./calc 0123456789 '()+-*/%' 10",
+                            "exp" : "-2698",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "G - with negative number #2",
+                "desc" :"negative numbers modulo",
+                "tests" :
+                    [
+                        {
+                            "name" : "negative numbers",
+                            "desc" : "negative test : -6568 % -7800",
+                            "test" : "echo '-6568%-7800' | ./calc 0123456789 '()+-*/%' 11",
+                            "exp" : "-6568",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "H - big #1",
+                "desc" :"big modulo",
+                "tests" :
+                    [
+                        {
+                            "name" : "big numbers",
+                            "desc" : "multiple test : -56 % -00596 % 1205687491235874 % 2 % 3",
+                            "test" : "echo '-56%-00596%1205687491235874%2%3' | ./calc 0123456789 '()+-*/%' 31",
+                            "exp" : "0",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "I - big #2",
+                "desc" :"big modulo",
+                "tests" :
+                    [
+                        {
+                            "name" : "big numbers",
+                            "desc" : "multiple test : -60 % 205655566223545885 % -2 % -356 % 7 ",
+                            "test" : "echo '-60%205655566223545885%-2%-356%7' | ./calc 0123456789 '()+-*/%' 32",
+                            "exp" : "0",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "J - big #3",
+                "desc" :"big modulo",
+                "tests" :
+                    [
+                        {
+                            "name" : "big numbers",
+                            "desc" : "multiple test : 5589251 %25689456456456319864 % 200 %3",
+                            "test" : "echo '5589251%25689456456456319864%200%3' | ./calc 0123456789 '()+-*/%' 34",
+                            "exp" : "0",
+                            "ret" : 0
+                        }
+                    ]
+            },
+            {
+                "name" : "K - by 0 exception",
+                "desc" :"by 0",
+                "tests" :
+                    [
+                        {
+                            "name" : "by 0",
+                            "desc" : "modulo by 0 : 0  / 0",
+                            "test" : "echo '0%0' | ./calc 0123456789 '()+-*/%' 3",
+                            "exp" : "syntax error",
+                            "ret" : 84
+                        }
+                    ]
+            }
+        ]
+    },
+    {
+    "name" : "07 - base and operators",
+    "desc" : "multiple operators and weird bases",
+    "sequences" : [
+        {
+            "name" : "A - binary base",
+            "desc" : "binary base calculs",
+            "tests" :
+                [
+                    {
+                        "name" : "binary base",
+                        "desc" : "binary : 1 + 1 = 10",
+                        "test" : "echo '1+1' | ./calc 01 '()+-*/%' 3" ,
+                        "exp" : "10",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "B - hexa base",
+            "desc" : "hexa base calculs",
+            "tests" :
+                [
+                    {
+                        "name" : "base 16",
+                        "desc" : "hexa base : A + A = 14 ( A = 10, A = 10, A + A = 20, 20 = 16 + 4, 16 = 10(HEXA), so A + A = 14",
+                        "test" : "echo 'A+A' | ./calc 0123456789ABCDEF '()+-*/%' 3",
+                        "exp" : "14",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "C - custom base #1",
+            "desc" : "custom base calculs",
+            "tests" :
+                [
+                    {
+                        "name" : "custom base",
+                        "desc" : "custom base : 0abu | a + b = u",
+                        "test" : "echo 'a+b' | ./calc 0abu '()+-*/%' 3",
+                        "exp" : "u",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "D - custom base #2",
+            "desc" : "custom base calculs",
+            "tests" :
+                [
+                    {
+                        "name" : "custom base",
+                        "desc" : "custom base : 0a89op | a*9+a=o",
+                        "test" : "echo 'a*9+a' | ./calc 0a89op '()+-*/%' 5",
+                        "exp" : "o",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "E - custom operators",
+            "desc" : "custom op calculs",
+            "tests" :
+                [
+                    {
+                        "name" : "custom operators",
+                        "desc" : "custom op : ()ukp/% | au3=7",
+                        "test" : "echo '4u3' | ./calc 0123456789 '()ukp/%' 3",
+                        "exp" : "7",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "F - mixed custom",
+            "desc" : "custom calculs",
+            "tests" :
+                [
+                    {
+                        "name" : "custom mixed",
+                        "desc" : "custom base : 0ez651d, custom op : ()ukp/% | 0 u 6p5 / z=d",
+                        "test" : "echo '0u6p5/z' | ./calc 0ez651d '()ukp/%' 7",
+                        "exp" : "d",
+                        "ret" : 0
+                    }
+                ]
+        }
+    ]
+    },
+    {
+    "name" : "07.5 - base and operators",
+    "desc" : "multiple operators and weird bases",
+    "sequences" : [
+        {
+            "name" : "A - binary base",
+            "desc" : "binary base calculs",
+            "tests" :
+                [
+                    {
+                        "name" : "binary base",
+                        "desc" : "binary : 1 + 1 = 10",
+                        "test" : "echo '1+1' | ./calc 01 '()+-*/%' 3",
+                        "exp" : "10",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "B - hexa base",
+            "desc" : "hexa base calculs",
+            "tests" :
+                [
+                    {
+                        "name" : "base 16",
+                        "desc" : "hexa base : A + A = 14 ( A = 10, A = 10, A + A = 20, 20 = 16 + 4, 16 = 10(HEXA), so A + A = 14",
+                        "test" : "echo 'A+A' | ./calc 0123456789ABCDEF '()+-*/%' 3",
+                        "exp" : "14",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "C - custom base #1",
+            "desc" : "custom base calculs",
+            "tests" :
+                [
+                    {
+                        "name" : "custom base",
+                        "desc" : "custom base : 0abu | a + b = u",
+                        "test" : "echo 'a+b' | ./calc 0abu '()+-*/%' 3",
+                        "exp" : "u",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "D - custom base #2",
+            "desc" : "custom base calculs",
+            "tests" :
+                [
+                    {
+                        "name" : "custom base",
+                        "desc" : "custom base : 0a89op | a*9+a=o",
+                        "test" : "echo 'a*9+a' | ./calc 0a89op '()+-*/%' 5",
+                        "exp" : "o",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "E - custom operators",
+            "desc" : "custom op calculs",
+            "tests" :
+                [
+                    {
+                        "name" : "custom operators",
+                        "desc" : "custom op : ()ukp/% | au3=7",
+                        "test" : "echo '4u3' | ./calc 0123456789 '()ukp/%' 3",
+                        "exp" : "7",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "F - mixed custom",
+            "desc" : "custom calculs",
+            "tests" :
+                [
+                    {
+                        "name" : "custom mixed",
+                        "desc" : "custom base : 0ez651d, custom op : ()ukp/% | 0 u 6p5 / z=d",
+                        "test" : "echo '0u6p5/z' | ./calc 0ez651d '()ukp/%' 7",
+                        "exp" : "d",
+                        "ret" : 0
+                    }
+                ]
+        }
+    ]
+    },
+    {
+    "name" : "08 - eval expr",
+    "desc" : "eval expr",
+    "sequences" : [
+        {
+            "name" : "A - operator priority #1",
+            "desc" : "priority test",
+            "tests" :
+                [
+                    {
+                        "name" : "testing priority",
+                        "desc" : "priority test : 2 +2*0 + 2 = 4",
+                        "test" : "echo '2+2*0+2' | ./calc 0123456789 '()+-*/%' 7",
+                        "exp" : "4",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "B - operator priority #2",
+            "desc" : "priority test",
+            "tests" :
+                [
+                    {
+                        "name" : "testing priority",
+                        "desc" : "priority test : 2 +2*0 + 2/2 = 3",
+                        "test" : "echo '2+2*0+2/2' | ./calc 0123456789 '()+-*/%' 9",
+                        "exp" : "3",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "C - operator priority #3",
+            "desc" : "priority test",
+            "tests" :
+                [
+                    {
+                        "name" : "testing priority",
+                        "desc" : "priority test : 2 +2*0 + 2/-1 +2 = 2",
+                        "test" : "echo '2+2*0+2/-1+2' | ./calc 0123456789 '()+-*/%' 12",
+                        "exp" : "2",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "D - unary operator #1",
+            "desc" : "repetition of operator test",
+            "tests" :
+                [
+                    {
+                        "name" : "unary operator",
+                        "desc" : "unary operator test : 2 + -(1 --2) = -1",
+                        "test" : "echo '2+-(1--2)' | ./calc 0123456789 '()+-*/%' 9",
+                        "exp" : "-1",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "E - unary operator #2",
+            "desc" : "repetition of operator test",
+            "tests" :
+                [
+                    {
+                        "name" : "unary operator",
+                        "desc" : "unary operator test : 2 * -2 + 3 = -1",
+                        "test" : "echo '2*-2+3' | ./calc 0123456789 '()+-*/%' 6",
+                        "exp" : "-1",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "F - unary operator #3",
+            "desc" : "repetition of operator test",
+            "tests" :
+                [
+                    {
+                        "name" : "unary operator",
+                        "desc" : "unary operator test : -2 * -2 + -3 = 1",
+                        "test" : "echo '-2*-2+-3' | ./calc 0123456789 '()+-*/%' 8",
+                        "exp" : "1",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "G - with parenthesis #1",
+            "desc" : "parenthesis test",
+            "tests" :
+                [
+                    {
+                        "name" : "parenthesis",
+                        "desc" : "parenthesis priority test : 2 * (2 + 1) = 6",
+                        "test" : "echo '2*(2+1)' | ./calc 0123456789 '()+-*/%' 7",
+                        "exp" : "6",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "H - with parenthesis #2",
+            "desc" : "parenthesis test",
+            "tests" :
+                [
+                    {
+                        "name" : "parenthesis",
+                        "desc" : "parenthesis priority test : 2 * (2 *(2-1) + 1) = 6",
+                        "test" : "echo '2*(2*(2-1)+1)' | ./calc 0123456789 '()+-*/%' 13",
+                        "exp" : "6",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "I - with parenthesis #3",
+            "desc" : "parenthesis test",
+            "tests" :
+                [
+                    {
+                        "name" : "parenthesis",
+                        "desc" : "parenthesis priority test : (8/(16 / 4)) * (2 *(2-1) + 1) = 6",
+                        "test" : "echo '(8/(16/4))*(2*(2-1)+1)' | ./calc 0123456789 '()+-*/%' 22",
+                        "exp" : "6",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "J - with parenthesis #4",
+            "desc" : "parenthesis test",
+            "tests" :
+                [
+                    {
+                        "name" : "parenthesis",
+                        "desc" : "parenthesis priority test : (8/(16 / 4)) * (2--(2 *(2-1) + 1)-2) = 6",
+                        "test" : "echo '(8/(16/4))*(2--(2*(2-1)+1)-2)' | ./calc 0123456789 '()+-*/%' 29",
+                        "exp" : "6",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "K - big #1",
+            "desc" : "parenthesis test",
+            "tests" :
+                [
+                    {
+                        "name" : "parenthesis",
+                        "desc" : "parenthesis priority test : (1256156165132156*-4563161612316516%(23232+5611485641651631)) = -4805041209494139",
+                        "test" : "echo '(1256156165132156*-4563161612316516%(23232+5611485641651631))' | ./calc 0123456789 '()+-*/%' 61",
+                        "exp" : "-4805041209494139",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "L - big #2",
+            "desc" : "parenthesis test",
+            "tests" :
+                [
+                    {
+                        "name" : "parenthesis",
+                        "desc" : "parenthesis priority test : (125615616518956*-456316489416%(23232-148564*651631)) = -60403713664",
+                        "test" : "echo '(125615616518956*-456316489416%(23232-148564*651631))' | ./calc 0123456789 '()+-*/%' 53",
+                        "exp" : "-60403713664",
+                        "ret" : 0
+                    }
+                ]
+        }
+    ]
+    },
+    {
+    "name" : "08 - eval expr",
+    "desc" : "eval expr",
+    "sequences" : [
+        {
+            "name" : "A - operator priority #1",
+            "desc" : "priority test",
+            "tests" :
+                [
+                    {
+                        "name" : "testing priority",
+                        "desc" : "priority test : 2 +2*0 + 2 = 4",
+                        "test" : "echo '2+2*0+2' | ./calc 0123456789 '()+-*/%' 7",
+                        "exp" : "4",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "B - operator priority #2",
+            "desc" : "priority test",
+            "tests" :
+                [
+                    {
+                        "name" : "testing priority",
+                        "desc" : "priority test : 2+2*0 + 2/2 = 3",
+                        "test" : "echo '2+2*0+2/2' | ./calc 0123456789 '()+-*/%' 9",
+                        "exp" : "3",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "C - operator priority #3",
+            "desc" : "priority test",
+            "tests" :
+                [
+                    {
+                        "name" : "testing priority",
+                        "desc" : "priority test : 2 +2*0 + 2/-1 +2 = 2",
+                        "test" : "echo '2+2*0+2/-1+2' | ./calc 0123456789 '()+-*/%' 12",
+                        "exp" : "2",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "D - unary operator #1",
+            "desc" : "repetition of operator test",
+            "tests" :
+                [
+                    {
+                        "name" : "unary operator",
+                        "desc" : "unary operator test : 2 + -(1 --2) = -1",
+                        "test" : "echo '2+-(1--2)' | ./calc 0123456789 '()+-*/%' 9",
+                        "exp" : "-1",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "E - unary operator #2",
+            "desc" : "repetition of operator test",
+            "tests" :
+                [
+                    {
+                        "name" : "unary operator",
+                        "desc" : "unary operator test : 2 * -2 + 3 = -1",
+                        "test" : "echo '2*-2+3' | ./calc 0123456789 '()+-*/%' 6",
+                        "exp" : "-1",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "F - unary operator #3",
+            "desc" : "repetition of operator test",
+            "tests" :
+                [
+                    {
+                        "name" : "unary operator",
+                        "desc" : "unary operator test : -2 * -2 + -3 = 1",
+                        "test" : "echo '-2*-2+-3' | ./calc 0123456789 '()+-*/%' 8",
+                        "exp" : "1",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "G - with parenthesis #1",
+            "desc" : "parenthesis test",
+            "tests" :
+                [
+                    {
+                        "name" : "parenthesis",
+                        "desc" : "parenthesis priority test : 2 * (2 + 1) = 6",
+                        "test" : "echo '2*(2+1)' | ./calc 0123456789 '()+-*/%' 7",
+                        "exp" : "6",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "H - with parenthesis #2",
+            "desc" : "parenthesis test",
+            "tests" :
+                [
+                    {
+                        "name" : "parenthesis",
+                        "desc" : "parenthesis priority test : 2 * (2 *(2-1) + 1) = 6",
+                        "test" : "echo '2*(2*(2-1)+1)' | ./calc 0123456789 '()+-*/%' 13",
+                        "exp" : "6",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "I - with parenthesis #3",
+            "desc" : "parenthesis test",
+            "tests" :
+                [
+                    {
+                        "name" : "parenthesis",
+                        "desc" : "parenthesis priority test : (8/(16 / 4)) * (2 *(2-1) + 1) = 6",
+                        "test" : "echo '(8/(16/4))*(2*(2-1)+1)' | ./calc 0123456789 '()+-*/%' 22",
+                        "exp" : "6",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "J - with parenthesis #4",
+            "desc" : "parenthesis test",
+            "tests" :
+                [
+                    {
+                        "name" : "parenthesis",
+                        "desc" : "parenthesis priority test : (8/(16 / 4)) * (2--(2 *(2-1) + 1)-2) = 6",
+                        "test" : "echo '(8/(16/4))*(2--(2*(2-1)+1)-2)' | ./calc 0123456789 '()+-*/%' 29",
+                        "exp" : "6",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "K - big #1",
+            "desc" : "parenthesis test",
+            "tests" :
+                [
+                    {
+                        "name" : "parenthesis",
+                        "desc" : "parenthesis priority test : (1256156165132156*-4563161612316516%(23232+5611485641651631)) = -4805041209494139",
+                        "test" : "echo '(1256156165132156*-4563161612316516%(23232+5611485641651631))' | ./calc 0123456789 '()+-*/%' 61",
+                        "exp" : "-4805041209494139",
+                        "ret" : 0
+                    }
+                ]
+        },
+        {
+            "name" : "L - big #2",
+            "desc" : "parenthesis test",
+            "tests" :
+                [
+                    {
+                        "name" : "parenthesis",
+                        "desc" : "parenthesis priority test : (125615616518956*-456316489416%(23232-148564*651631)) = -60403713664",
+                        "test" : "echo '(125615616518956*-456316489416%(23232-148564*651631))' | ./calc 0123456789 '()+-*/%' 53",
+                        "exp" : "-60403713664",
+                        "ret" : 0
+                    }
+                ]
+        }
+    ]
+    }
+]
